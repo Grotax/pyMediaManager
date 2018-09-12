@@ -38,6 +38,10 @@ class Medium():
         """ add one ore more tags """
         self.tags.append(tag_string)
 
+    def get_tags(self):
+        """ returns all tags as json """
+        return json.dumps(self.tags)
+
     def delete_tag(self, tag_string):
         """ delete a tag """
         self.tags.remove(tag_string)
