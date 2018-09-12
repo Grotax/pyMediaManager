@@ -31,6 +31,41 @@ class MediaManager():
         for element in collection:
             self.collection_db.put(element)
 
+    def update_collection(self):
+        """ rescan direcotry and add new files """
+        # TODO
+        pass
+
+    def delete_medium(self, delete_file=False):
+        """ delete medium from db, delete thumbnail
+            optional: delete file on disk           """
+        # TODO
+        pass
+
+    def update_medium(self):
+        """ edit a medium """
+        # TODO
+        pass
+
+    def get_medium(self, medium_id):
+        """ returns medium with id """
+        # TODO
+        pass
+
+    def get_medium_ids(self):
+        """ returns all ids """
+        # TODO
+        pass
+
+    def get_all_media(self):
+        """ returns all medium files """
+        # TODO
+        pass
+
+    def search(self, pattern):
+        """ search in collection """
+        # TODO
+        pass
 
 def main():
     my_manager = MediaManager()
