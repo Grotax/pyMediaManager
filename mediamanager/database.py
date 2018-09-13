@@ -1,6 +1,6 @@
 """ Database adapter """
 import sqlite3
-import medium
+# import medium
 
 class Database():
     """ interacts with the database """
@@ -8,32 +8,53 @@ class Database():
         super().__init__()
         self.database = sqlite3.connect(databasepath)
         self.database_cursor = self.database.cursor()
-        self.database_cursor.execute("CREATE TABLE IF NOT EXISTS collection (medium_id text PRIMARY KEY, filename text, tags text)")
+        self.database_cursor.execute(
+            """CREATE TABLE IF NOT EXISTS collection
+               (medium_id text PRIMARY KEY, filename text, tags text)""")
 
     def get_ids(self):
         """ returns all ids """
-        return self.database_cursor.execute("SELECT medium_id FROM collection").fetchall()
+        return self.database_cursor.execute(
+            "SELECT medium_id FROM collection").fetchall()
 
     def get_all(self):
         """ read all available data from database """
-        return self.database_cursor.execute("SELECT * FROM collection").fetchall()
+        return self.database_cursor.execute(
+            "SELECT * FROM collection").fetchall()
 
     def get(self, medium_id):
         """ read data from database """
-        return self.database_cursor.execute("SELECT * FROM collection WHERE medium_id=?", (medium_id,))
+        return self.database_cursor.execute(
+            "SELECT * FROM collection WHERE medium_id=?", (medium_id,))
 
     def update(self, existing_medium):
         """ update a entry in the db """
-        self.database_cursor.execute("UPDATE collection SET filename = ?, tags = ? WHERE medium_id = ?",
-                                     (existing_medium.filename, existing_medium.get_tags(), existing_medium.medium_id))
+        self.database_cursor.execute(
+            "UPDATE collection SET filename = ?, tags = ? WHERE medium_id = ?",
+            (existing_medium.filename,
+             existing_medium.get_tags(),
+             existing_medium.medium_id))
+        self.database.commit()
 
-    def put(self, new_medium):
-        """ write data to database """
-        self.database_cursor.execute("INSERT INTO collection VALUES (?, ?, ?)",
-                                     (new_medium.medium_id, new_medium.filename, new_medium.get_tags()))
+    def put(self, new_media):
+        """ write data to database.
+        Accepts medium object and iterable of medium objects. """
+        def put_one(new_medium):
+            """Inserts a single row without committing"""
+            self.database_cursor.execute(
+                "INSERT INTO collection VALUES (?, ?, ?)",
+                (new_medium.medium_id,
+                 new_medium.filename,
+                 new_medium.get_tags()))
+        try:
+            for new_medium in new_media:
+                put_one(new_medium)
+        except TypeError:
+            put_one(new_media)
         self.database.commit()
 
     def delete(self, medium_id):
         """ delete a entry """
-        self.database_cursor.execute("DELETE FROM collection WHERE medium_id=?", (medium_id,))
+        self.database_cursor.execute(
+            "DELETE FROM collection WHERE medium_id=?", (medium_id,))
         self.database.commit()
