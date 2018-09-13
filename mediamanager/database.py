@@ -25,7 +25,7 @@ class Database():
     def get(self, medium_id):
         """ read data from database """
         return self.database_cursor.execute(
-            "SELECT * FROM collection WHERE medium_id=?", (medium_id,))
+            "SELECT * FROM collection WHERE medium_id=?", (medium_id,)).fetchall()
 
     def update(self, existing_medium):
         """ update a entry in the db """
