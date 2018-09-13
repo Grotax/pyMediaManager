@@ -12,6 +12,8 @@ class Medium():
         self.filename = filename
         if medium_id is None:
             self.create_media_id()
+        else:
+            self.medium_id = medium_id
         self.tags = []
         self.load_tags(tags)
 
