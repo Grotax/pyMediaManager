@@ -20,6 +20,7 @@ setup(
     packages=find_packages(exclude=('tests', 'docs')),
     install_requires=[
         'python-magic',
+        'python-magic-bin',
     ],
     entry_points={
         'console_scripts': [
