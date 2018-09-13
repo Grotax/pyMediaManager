@@ -49,18 +49,22 @@ class MediaManager():
 
     def get_medium(self, medium_id):
         """ returns medium with id """
-        # TODO
-        pass
+        medium_data = self.collection_db.get(medium_id)
+        return medium.Medium(medium_data.medium_id, medium_data.filename, medium_data.tags)
+
 
     def get_medium_ids(self):
         """ returns all ids """
-        # TODO
-        pass
+        return self.collection_db.get_ids()
 
     def get_all_media(self):
         """ returns all medium files """
-        # TODO
-        pass
+        media = []
+        medium_data_all = self.collection_db.get_all()
+        for medium_data in medium_data_all:
+            media.append(medium.Medium(medium_data.medium_id, medium_data.filename, medium_data.tags))
+        return media
+
 
     def search(self, pattern):
         """ search in collection """

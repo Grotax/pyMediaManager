@@ -16,11 +16,11 @@ class Database():
 
     def get_all(self):
         """ read all available data from database """
-        self.database_cursor.execute("SELECT * FROM collection").fetchall()
+        return self.database_cursor.execute("SELECT * FROM collection").fetchall()
 
-    def get(self, existing_medium):
+    def get(self, medium_id):
         """ read data from database """
-        self.database_cursor.execute("SELECT * FROM collection WHERE medium_id=?", (existing_medium.medium_id,))
+        return self.database_cursor.execute("SELECT * FROM collection WHERE medium_id=?", (medium_id,))
 
     def update(self, existing_medium):
         """ update a entry in the db """
