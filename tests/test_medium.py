@@ -1,15 +1,12 @@
 """Testing the medium function"""
 #pylint: disable=w0621
 
+import os
 import json
 
 import pytest
 
 from mediamanager import medium
-
-
-DEMO = medium.Medium("ID", "FILENAME", json.dumps(["TAG1", "TAG2"]))
-DEMO2 = medium.Medium("ID2", "FILENAME2", json.dumps(["TAG1", "TAG2"]))
 
 ID1 = "ID"
 FILENAME1 = "FILENAME"
@@ -43,33 +40,56 @@ def test___repr__(demo, demo2):
 
 def test___eq__():
     """equality test"""
-    first = medium.Medium("ID", "FILENAME", json.dumps(["TAG1", "TAG2"]))
-    second = medium.Medium("ID", "FILENAME", json.dumps(["TAG1", "TAG2"]))
+    first = medium.Medium("ID", "FILENAME", json.dumps(TAGS1))
+    second = medium.Medium("ID", "FILENAME", json.dumps(TAGS1))
     third = medium.Medium("ID", "FILENAME", json.dumps(["TAG1", "TAG111"]))
     assert first == second
     assert first != third
     assert second != third
 
-
-def test_mime_type():
+def test_mime_type(tmpdir):
     """brauchen dafür vielleicht testdatei"""
-    pass
+    path = lambda x: os.path.join(tmpdir, x)
+    open(path("empty.txt"), "w").close()
+    with open(path("text.txt"), "w") as file:
+        file.write("Demo Text")
+    with open(path("pixel.png"), "wb") as file:
+        file.write(b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR')
+    media1 = medium.Medium(None, path("text.txt"), '["Text"]')
+    media2 = medium.Medium(None, path("empty.txt"), '["Nothing"]')
+    media3 = medium.Medium(None, path("pixel.png"), '["image"]')
+    assert media1.mime_type() == "text/plain"
+    assert media2.mime_type() == "inode/x-empty"
+    assert media3.mime_type() == "image/png"
 
-def test_rename():
-    """verändert dateiname auf fs, mock?"""
-    pass
+def test_rename(tmpdir):
+    """change file name. can also change path"""
+    path = lambda *x: os.path.join(tmpdir, *x)
+    open(path("empty.txt"), "w").close()
+    media = medium.Medium(None, path("empty.txt"), '["Nothing"]')
+    media.rename(path("lol.txt"))
+    assert os.listdir(tmpdir) == ["lol.txt"]
+    os.mkdir(path("test"))
+    media.rename(path("test", "lol.txt"))
+    assert os.listdir(path("test")) == ["lol.txt"]
 
-def test_load_tags():
+def test_load_tags(demo):
     """Changes medium object"""
-    pass
+    assert demo.tags == TAGS1
+    assert demo.tags != ["Tag4"]
+    demo.load_tags('["Tag4"]')
+    assert demo.tags == ["Tag4"]
+    assert demo.tags != TAGS1
 
-def test_add_tags():
+def test_add_tags(demo):
     """adding tags to medium"""
-    pass
+    assert not demo.contains("TAG3")
+    demo.add_tags("TAG3")
+    assert demo.contains("TAG3")
 
-def test_get_tags():
-    """json"""
-    assert DEMO.get_tags() == json.dumps(DEMO.tags)
+def test_get_tags(demo):
+    """tags as json test"""
+    assert demo.get_tags() == json.dumps(TAGS1)
 
 def test_contains(demo, demo2):
     """check if tags are there"""
@@ -86,6 +106,11 @@ def test_delete_tag(demo):
     demo.delete_tag("TAG1")
     assert not demo.contains("TAG1")
 
-def test_create_media_id():
+def test_create_media_id(tmpdir):
     """also needs a file"""
-    pass
+    path = lambda *x: os.path.join(tmpdir, *x)
+    with open(path("pixel.png"), "wb") as file:
+        file.write(b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR')
+    media = medium.Medium(None, path("pixel.png"), [])
+    assert media.medium_id == \
+    "02a3e298f1533f62558c58e4c70edcab9af5a50d62d925fd5390942020fb0fb8"
