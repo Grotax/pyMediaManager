@@ -21,6 +21,7 @@ setup(
     install_requires=[
         'python-magic',
         'watchdog',
+	'pyside2',
     ],
     extras_require={
         'dev': [
