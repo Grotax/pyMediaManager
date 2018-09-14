@@ -6,8 +6,8 @@ import json
 
 import pytest
 
-import database
-import medium
+from mediamanager import database
+from mediamanager import medium
 
 DEMO = medium.Medium("ID", "FILENAME", json.dumps(["TAG1", "TAG2"]))
 DEMO2 = medium.Medium("ID2", "FILENAME2", json.dumps(["TAG1", "TAG2"]))

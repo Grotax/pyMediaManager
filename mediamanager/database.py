@@ -1,6 +1,5 @@
 """ Database adapter """
 import sqlite3
-# import medium
 
 class Database():
     """ interacts with the database """
