@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 """ mediamanger """
 import os
-import medium
-import database
+from mediamanager import medium
+from mediamanager import database
 
 class MediaManager():
     """ thats a MediaManager """
@@ -73,7 +73,7 @@ class MediaManager():
 
 def main():
     my_manager = MediaManager()
-    my_manager.create_collection("some media dir")
+    my_manager.create_collection("")
 
 if __name__ == '__main__':
     main()

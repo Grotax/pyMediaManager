@@ -19,8 +19,14 @@ setup(
     license=LICENSE,
     packages=find_packages(exclude=('tests', 'docs')),
     install_requires=[
-        'python-magic-bin',
+        'python-magic',
+        'watchdog',
     ],
+    extras_require={
+        'dev': [
+            'pytest',
+        ]
+    },
     entry_points={
         'console_scripts': [
             'mediamanager = mediamanager.mediamanager:main'

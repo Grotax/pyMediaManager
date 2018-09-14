@@ -1,6 +1,5 @@
 """ Database adapter """
 import sqlite3
-# import medium
 
 class Database():
     """ interacts with the database """
@@ -10,7 +9,7 @@ class Database():
         self.database_cursor = self.database.cursor()
         self.database_cursor.execute(
             """CREATE TABLE IF NOT EXISTS collection
-               (medium_id text PRIMARY KEY, filename text, tags text)""")
+               (medium_id text, filename text, tags text, PRIMARY KEY (medium_id, filename))""")
 
     def get_ids(self):
         """ returns all ids """
@@ -25,7 +24,7 @@ class Database():
     def get(self, medium_id):
         """ read data from database """
         return self.database_cursor.execute(
-            "SELECT * FROM collection WHERE medium_id=?", (medium_id,)).fetchall()
+            "SELECT * FROM collection WHERE medium_id=?", (medium_id,)).fetchone()
 
     def update(self, existing_medium):
         """ update a entry in the db """
