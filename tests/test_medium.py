@@ -37,8 +37,8 @@ def test___str__(demo, demo2):
 
 def test___repr__(demo, demo2):
     """test self-reproducing repr"""
-    assert repr(demo) == """medium.Medium("ID", "FILENAME", '["TAG1", "TAG2"]')"""
-    assert repr(demo2) == """medium.Medium("ID2", "FILENAME2", '["TAG2", "TAG3"]')"""
+    assert repr(demo) == """medium.Medium('ID', 'FILENAME', '["TAG1", "TAG2"]')"""
+    assert repr(demo2) == """medium.Medium('ID2', 'FILENAME2', '["TAG2", "TAG3"]')"""
     # assert DEMO == eval(repr(DEMO))
 
 def test___eq__():

@@ -7,6 +7,10 @@ import magic
 
 class Medium():
     """ a Medium """
+    medium_id = ""
+    filename = ""
+    tags = []
+
     def __init__(self, medium_id, filename, tags):
         super().__init__()
         self.filename = filename
@@ -14,11 +18,23 @@ class Medium():
             self.create_media_id()
         else:
             self.medium_id = medium_id
-        self.tags = []
         self.load_tags(tags)
 
     def __str__(self):
         return self.filename
+
+    def __repr__(self):
+        string = """medium.Medium('{}', '{}', '{}')""".format(
+            self.medium_id, self.filename, json.dumps(self.tags))
+        return string
+
+    def __eq__(self, other):
+        vals = []
+        vals.append(self.medium_id == other.medium_id)
+        vals.append(self.tags == other.tags)
+        vals.append(self.filename == other.filename)
+
+        return all(vals)
 
     def mime_type(self):
         """ returns mime type """
