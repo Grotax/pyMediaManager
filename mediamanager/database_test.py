@@ -21,6 +21,9 @@ def data_base():
 
 def test_empty(data_base):
     """Empty database should return empty"""
+    result = data_base.database_cursor.execute(
+        "select * from collection").fetchall()
+    assert result == []
     assert data_base.get_ids() == []
 
 def test_put(data_base):
