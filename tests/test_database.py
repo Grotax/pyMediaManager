@@ -54,9 +54,9 @@ def test_get(data_base):
     data_base.put(DEMO)
     data_base.put(DEMO2)
     result = data_base.get(DEMO.medium_id)
-    assert result == [(DEMO.medium_id, DEMO.filename, DEMO.get_tags())]
+    assert result == (DEMO.medium_id, DEMO.filename, DEMO.get_tags())
     result = data_base.get(DEMO2.medium_id)
-    assert result == [(DEMO2.medium_id, DEMO2.filename, DEMO2.get_tags())]
+    assert result == (DEMO2.medium_id, DEMO2.filename, DEMO2.get_tags())
 
 def test_get_all(data_base):
     """test the get all function"""
