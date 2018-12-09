@@ -73,7 +73,6 @@ class MediaManager():
 
 def main():
     my_manager = MediaManager()
-    my_manager.create_collection("")
 
 if __name__ == '__main__':
     main()

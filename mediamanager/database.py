@@ -3,9 +3,9 @@ import sqlite3
 
 class Database():
     """ interacts with the database """
-    def __init__(self, databasepath):
+    def __init__(self, database_path):
         super().__init__()
-        self.database = sqlite3.connect(databasepath)
+        self.database = sqlite3.connect(database_path)
         self.database_cursor = self.database.cursor()
         self.database_cursor.execute(
             """CREATE TABLE IF NOT EXISTS collection
