@@ -2,7 +2,8 @@
 """ The gui for mediamanager """
 import sys
 
-from PySide2.QtWidgets import QApplication, QMainWindow, QToolBar, QLineEdit, QGridLayout, QBoxLayout, QVBoxLayout, QWidget, QPushButton, QLabel
+from PySide2.QtWidgets import QApplication, QMainWindow, QLineEdit, QGridLayout, QBoxLayout, QVBoxLayout, QWidget, QPushButton, QLabel, QFileDialog
+import manager
 
 class DetailView(QBoxLayout):
     """docstring for DetailView"""
@@ -11,28 +12,25 @@ class DetailView(QBoxLayout):
 
 class Medium(QVBoxLayout):
     """ """
-    def __init__(self, title):
+    def __init__(self, medium):
         super().__init__()
         self.addWidget(QLabel("Bild"))
-        self.addWidget(QLabel(title))
+        self.addWidget(QLabel(medium.filename))
 
 class OverView(QGridLayout):
     """docstring for OverView"""
     def __init__(self):
         super().__init__()
-        self.update()
-    def update(self):
-        counter = 0
+        #self.update()
+    def update(self, media=[]):
         x = 0
         y = 0
-        while counter < 20:
+        for medium in media:
             if y > 5:
                 x += 1
                 y = 0
-            self.addLayout(Medium("x: {}, y: {}".format(x, y)), x, y)
-            print("x: {}, y: {}".format(x, y))
+            self.addLayout(Medium(medium), x, y)
             y += 1
-            counter += 1
 
 
 class Search(QBoxLayout):
@@ -56,15 +54,20 @@ class MainWindow(QMainWindow):
         self.main_grid.addLayout(self.search, 0, 0)
         self.main_grid.addLayout(self.over_view, 1, 0)
 
-        self.button = QPushButton("Test")
-        self.button.clicked.connect(self.button_action)
+        self.button = QPushButton("Open Collection")
+        self.button.clicked.connect(self.open_folder)
         self.main_grid.addWidget(self.button, 2, 0, 1)
 
         self.main_widget.setLayout(self.main_grid)
         self.setCentralWidget(self.main_widget)
 
-    def button_action(self):
-        print("Hello")
+    def open_folder(self):
+        dialog = QFileDialog(self)
+        directory = dialog.getExistingDirectory()
+        media_manager = manager.MediaManager()
+        media_manager.create_collection(directory)
+
+        self.over_view.update(media_manager.get_all_media())
 
 
 

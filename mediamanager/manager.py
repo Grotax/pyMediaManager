@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 """ mediamanger """
 import os
-from mediamanager import medium
-from mediamanager import database
+import medium
+import database
 
 class MediaManager():
     """ thats a MediaManager """
@@ -12,6 +12,7 @@ class MediaManager():
 
     def create_collection(self, directory):
         """ create a new collection """
+        # TODO check if db exists
         mediamanger_path = os.path.join(directory, ".mediamanger")
         try:
             os.mkdir(mediamanger_path)
@@ -70,9 +71,3 @@ class MediaManager():
         """ search in collection """
         # TODO
         pass
-
-def main():
-    my_manager = MediaManager()
-
-if __name__ == '__main__':
-    main()
