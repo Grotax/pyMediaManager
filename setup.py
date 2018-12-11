@@ -30,7 +30,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'mediamanager = mediamanager.mediamanager:main'
+            'mediamanager = mediamanager.gui:main'
         ]
     }
 )

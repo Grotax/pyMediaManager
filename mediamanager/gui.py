@@ -3,7 +3,7 @@
 import sys
 
 from PySide2.QtWidgets import QApplication, QMainWindow, QLineEdit, QGridLayout, QBoxLayout, QVBoxLayout, QWidget, QPushButton, QLabel, QFileDialog
-import manager
+from . import manager
 
 class DetailView(QBoxLayout):
     """docstring for DetailView"""
@@ -61,20 +61,17 @@ class MainWindow(QMainWindow):
         self.main_widget.setLayout(self.main_grid)
         self.setCentralWidget(self.main_widget)
 
+        self.media_manager = manager.MediaManager()
+
     def open_folder(self):
         dialog = QFileDialog(self)
-        directory = dialog.getExistingDirectory()
-        media_manager = manager.MediaManager()
-        media_manager.create_collection(directory)
+        directory = dialog.getExistingDirectory(self)
 
-        self.over_view.update(media_manager.get_all_media())
+        self.media_manager.create_collection(directory)
 
+        #self.over_view.update(media_manager.get_all_media())
 
-
-
-
-if __name__ == "__main__":
-
+def main():
     app = QApplication(sys.argv)
 
     mainWin = MainWindow()
@@ -82,3 +79,6 @@ if __name__ == "__main__":
     mainWin.resize(availableGeometry.width() * 2 / 3, availableGeometry.height() * 2 / 3)
     mainWin.show()
     sys.exit(app.exec_())
+
+if __name__ == "__main__":
+    main()

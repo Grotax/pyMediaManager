@@ -1,8 +1,9 @@
 #!/usr/bin/python3
 """ mediamanger """
 import os
-import medium
-import database
+
+from . import medium
+from . import database
 
 class MediaManager():
     """ thats a MediaManager """
@@ -63,9 +64,8 @@ class MediaManager():
         media = []
         medium_data_all = self.collection_db.get_all()
         for medium_data in medium_data_all:
-            media.append(medium.Medium(medium_data.medium_id, medium_data.filename, medium_data.tags))
+            media.append(medium.Medium(medium_data[0], medium_data[1], medium_data[2]))
         return media
-
 
     def search(self, pattern):
         """ search in collection """
