@@ -2,18 +2,57 @@
 """ mediamanger """
 import os
 
+from PySide2.QtCore import QRunnable, QThreadPool, QObject, Signal
+
 from . import medium
 from . import database
 
-class MediaManager():
+class ScannerSignals(QObject):
+    '''
+    Defines the signals available from a running worker thread.
+
+    '''
+    result = Signal(list)
+
+class Scanner(QRunnable):
+    """ Scan a directory """
+    def __init__(self, directory):
+        super().__init__()
+        self.directory = directory
+        self.signals = ScannerSignals()
+
+    def run(self):
+        collection = []
+
+        for file in os.listdir(self.directory):
+            file_name = os.path.join(self.directory, file)
+            try:
+                collection.append(medium.Medium(None, file_name, []))
+            except IsADirectoryError:
+                pass
+        self.signals.result.emit(collection)
+
+class MediaManager(QObject):
     """ thats a MediaManager """
     def __init__(self):
         super().__init__()
         self.collection_db = None
+        self.observers = []
+        self.threadpool = None
+
+    def register_observer(self, observer):
+        """ register a new observer """
+        self.observers.append(observer)
+
+    def notify_observers(self):
+        """ notify all the observers """
+        for observer in self.observers:
+            observer.recieve()
 
     def create_collection(self, directory):
         """ create a new collection """
-        # TODO check if db exists
+        if directory == "":
+            return
         mediamanger_path = os.path.join(directory, ".mediamanger")
         try:
             os.mkdir(mediamanger_path)
@@ -22,16 +61,15 @@ class MediaManager():
             pass
 
         self.collection_db = database.Database(os.path.join(mediamanger_path, "mediamanger.db"))
-        collection = []
 
-        for file in os.listdir(directory):
-            file_name = os.path.join(directory, file)
-            try:
-                collection.append(medium.Medium(None, file_name, []))
-            except IsADirectoryError:
-                pass
-        for element in collection:
-            self.collection_db.put(element)
+        self.threadpool = QThreadPool()
+        scanner = Scanner(directory)
+        scanner.signals.result.connect(self.write_to_db)
+        self.threadpool.start(scanner)
+
+    def write_to_db(self, var):
+        self.collection_db.put(var)
+        self.notify_observers()
 
     def update_collection(self):
         """ rescan direcotry and add new files """

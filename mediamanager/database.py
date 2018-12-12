@@ -41,7 +41,7 @@ class Database():
         def put_one(new_medium):
             """Inserts a single row without committing"""
             self.database_cursor.execute(
-                "INSERT INTO collection VALUES (?, ?, ?)",
+                "INSERT OR IGNORE INTO collection VALUES (?, ?, ?)",
                 (new_medium.medium_id,
                  new_medium.filename,
                  new_medium.get_tags()))
