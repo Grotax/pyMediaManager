@@ -3,6 +3,7 @@
 import sys
 
 from PySide2.QtWidgets import QApplication, QMainWindow, QLineEdit, QGridLayout, QBoxLayout, QVBoxLayout, QWidget, QPushButton, QLabel, QFileDialog, QScrollArea
+from PySide2.QtGui import QMovie
 from . import manager
 
 class DetailView(QBoxLayout):
@@ -61,10 +62,21 @@ class MainWindow(QMainWindow):
         self.main_grid.addLayout(self.search, 0, 0)
         self.main_grid.addWidget(self.scroll_area, 1, 0)
 
+        self.button_loading = QBoxLayout(QBoxLayout.LeftToRight)
         self.button = QPushButton("Open Collection")
         self.button.clicked.connect(self.open_folder)
-        self.main_grid.addWidget(self.button, 2, 0, 1)
 
+        self.loader_widget = QLabel("Loading...")
+        #self.loader_animation = QMovie("assets/loader.gif")
+        #self.loader_widget.setMovie(self.loader_animation)
+        self.loader_widget.setVisible(False)
+
+        self.button_loading.addWidget(self.button)
+        self.button_loading.addWidget(self.loader_widget)
+
+        self.main_grid.addLayout(self.button_loading, 2, 0, 1)
+
+        self.main_grid.addWidget(self.loader_widget, 2, 1, 1)
         self.main_widget.setLayout(self.main_grid)
         self.setCentralWidget(self.main_widget)
 
@@ -74,11 +86,14 @@ class MainWindow(QMainWindow):
     def open_folder(self):
         dialog = QFileDialog(self)
         directory = dialog.getExistingDirectory(self)
-
+        self.button.setEnabled(False)
+        self.loader_widget.setVisible(True)
         self.media_manager.create_collection(directory)
 
     def recieve(self):
         self.over_view.update(self.media_manager.get_all_media())
+        self.button.setEnabled(True)
+        self.loader_widget.setVisible(False)
 
 def main():
     app = QApplication(sys.argv)
